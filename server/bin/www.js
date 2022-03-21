@@ -1,12 +1,18 @@
-const app = require('../app');
-const debug = require('debug')('server:server');
-const http = require('http');
-require('dotenv').config();
+import app from '../app.js';
+import debug from 'debug';
+import http from 'http';
+import { socketInit } from '../Socket/index.js';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+debug('server:server');
 
 const port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
-const server = http.createServer(app);
+export const server = http.createServer(app);
+
+socketInit(server, app);
 
 server.listen(port);
 server.on('error', onError);
