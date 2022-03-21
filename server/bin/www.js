@@ -2,9 +2,7 @@ import app from '../app.js';
 import debug from 'debug';
 import http from 'http';
 import { socketInit } from '../Socket/index.js';
-import * as dotenv from 'dotenv';
 
-dotenv.config();
 debug('server:server');
 
 const port = normalizePort(process.env.PORT || '4000');
