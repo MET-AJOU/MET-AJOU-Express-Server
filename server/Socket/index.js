@@ -7,10 +7,7 @@ export const socketInit = (server, app) => {
     const io = new Server(server, { cors: corsOption });
     io.on('connection', (socket) => {
         printConnection(socket);
-        socket.on('join', joinRoom);
-        socket.on('chat', chat);
-        socket.on('keyUp', keyUp);
-        socket.on('keyDown', keyDown);
+        initSocketEvents({ io, socket });
     });
 };
 

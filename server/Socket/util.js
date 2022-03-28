@@ -9,30 +9,32 @@ export const printConnection = (socket) => {
     console.log('socket id : ', socket.id);
 };
 
-export const joinRoom = ({ roomId, userId }) => {
-    UserIdToRoom.set(userId, roomId);
-    this.join(roomId);
-    this.to(roomId).emit('join', {
-        characterId: 1,
-        position: { x: 1, y: 7, z: 1 },
+export const initSocketEvents = ({ io, socket }) => {
+    socket.on('join', ({ roomId, userId }) => {
+        UserIdToRoom.set(userId, roomId);
+        socket.join(roomId);
+        io.to(roomId).emit('join', {
+            characterId: 1,
+            position: { x: 1, y: 7, z: 1 },
+        });
     });
-};
 
-export const chat = ({ userId, message, position }) => {
-    const roomId = getJoinRoom(userId);
-    this.to(roomId).emit('chat', {
-        userId,
-        message,
-        position,
+    socket.on('chat', ({ userId, message, position }) => {
+        const roomId = getJoinRoom(userId);
+        io.to(roomId).emit('chat', {
+            userId,
+            message,
+            position,
+        });
     });
-};
 
-export const keyUp = ({ userId, key, position }) => {
-    const roomId = getJoinRoom(userId);
-    this.to(roomId).emit('keyUp', { userId, key, position });
-};
+    socket.on('keyUp', ({ userId, key, position }) => {
+        const roomId = getJoinRoom(userId);
+        io.to(roomId).emit('keyUp', { userId, key, position });
+    });
 
-export const keyDown = ({ userId, key, position }) => {
-    const roomId = getJoinRoom(userId);
-    this.to(roomId).emit('keyDown', { userId, key, position });
+    socket.on('keyDown', ({ userId, key, position }) => {
+        const roomId = getJoinRoom(userId);
+        io.to(roomId).emit('keyDown', { userId, key, position });
+    });
 };
