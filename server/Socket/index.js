@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import { corsOption } from '../Common/Constant/index.js';
-import { printConnection, joinRoom, chat, keyUp, keyDown } from './util.js';
+import { printConnection, initSocketEvents } from './events.js';
 
 export const socketInit = (server, app) => {
     console.log(corsOption);
