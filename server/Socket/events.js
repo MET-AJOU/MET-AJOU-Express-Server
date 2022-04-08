@@ -1,11 +1,6 @@
-import {
-    getJoinedUsersState,
-    getUserState
-} from "./util.js"
+import { getJoinedUsersState, getUserState } from './util.js';
 
-import {
-    defaultKeyBoardState
-} from "./constant.js";
+import { defaultKeyBoardState } from './constant.js';
 
 const UserIdToRoom = new Map();
 const UsersState = new Map();
@@ -19,15 +14,8 @@ export const printConnection = (socket) => {
     console.log('socket id : ', socket.id);
 };
 
-export const initSocketEvents = ({
-    io,
-    socket
-}) => {
-    socket.on('join', ({
-        roomId,
-        userId
-    }) => {
-
+export const initSocketEvents = ({ io, socket }) => {
+    socket.on('join', ({ roomId, userId }) => {
         let _userId = UsersState.size + 1;
         UserIdToRoom.set(_userId, roomId);
 
@@ -36,32 +24,31 @@ export const initSocketEvents = ({
             characterId: 1,
             position: {
                 x: 1,
-                y: 7,
-                z: 1
+                y: 7 + _userId,
+                z: 1,
             },
-            keyState: defaultKeyBoardState
+            keyState: defaultKeyBoardState,
         });
+
         UsersState.set(_userId, {
             userId: _userId,
             position: {
                 x: 1,
-                y: 7,
-                z: 1
+                y: 7 + _userId,
+                z: 1,
             },
             characterId: 1,
-            keyState: defaultKeyBoardState
+            keyState: defaultKeyBoardState,
         });
 
         const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
+
+        io.to(socket.id).emit('getUserId', _userId);
         io.to(socket.id).emit('joinRoom', joinedUsers);
         socket.join(roomId);
     });
 
-    socket.on('chat', ({
-        userId,
-        message,
-        position
-    }) => {
+    socket.on('chat', ({ userId, message, position }) => {
         const roomId = getJoinRoom(userId);
         io.in(roomId).emit('chat', {
             userId,
@@ -70,37 +57,30 @@ export const initSocketEvents = ({
         });
     });
 
-    socket.on('keyDown', ({
-        userId,
-        keyState,
-    }) => {
+    socket.on('keyDown', ({ userId, keyState }) => {
         const roomId = getJoinRoom(userId);
         const beforeUserState = getUserState(UsersState, userId);
         const changedUserState = {
             ...beforeUserState,
-            keyState
+            keyState,
         };
 
-        UsersState.set(userId, changedUserState)
+        UsersState.set(userId, changedUserState);
         const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
         io.in(roomId).emit('keyDown', joinedUsers);
     });
 
-    socket.on('keyUp', ({
-        userId,
-        keyState,
-    }) => {
+    socket.on('keyUp', ({ userId, keyState }) => {
         const roomId = getJoinRoom(userId);
 
         const beforeUserState = getUserState(UsersState, userId);
         const changedUserState = {
             ...beforeUserState,
-            keyState
+            keyState,
         };
 
         UsersState.set(userId, changedUserState);
         const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
         io.in(roomId).emit('keyUp', joinedUsers);
-
     });
 };
