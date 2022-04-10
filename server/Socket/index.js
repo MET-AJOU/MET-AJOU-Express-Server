@@ -1,13 +1,25 @@
-import { Server } from 'socket.io';
-import { corsOption } from '../Common/Constant/index.js';
-import { printConnection, initSocketEvents } from './events.js';
+import {
+    Server
+} from 'socket.io';
+import {
+    corsOption
+} from '../Common/Constant/index.js';
+import {
+    printConnection,
+    initSocketEvents
+} from './events.js';
 
 export const socketInit = (server, app) => {
     console.log(corsOption);
-    const io = new Server(server, { cors: corsOption });
+    const io = new Server(server, {
+        cors: corsOption
+    });
     io.on('connection', (socket) => {
         printConnection(socket);
-        initSocketEvents({ io, socket });
+        initSocketEvents({
+            io,
+            socket
+        });
     });
 };
 
