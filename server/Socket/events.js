@@ -57,11 +57,12 @@ export const initSocketEvents = ({ io, socket }) => {
         });
     });
 
-    socket.on('keyDown', ({ userId, keyState }) => {
+    socket.on('keyDown', ({ userId, keyState, position }) => {
         const roomId = getJoinRoom(userId);
         const beforeUserState = getUserState(UsersState, userId);
         const changedUserState = {
             ...beforeUserState,
+            position,
             keyState,
         };
 
@@ -70,12 +71,13 @@ export const initSocketEvents = ({ io, socket }) => {
         io.in(roomId).emit('keyDown', joinedUsers);
     });
 
-    socket.on('keyUp', ({ userId, keyState }) => {
+    socket.on('keyUp', ({ userId, keyState, position }) => {
         const roomId = getJoinRoom(userId);
 
         const beforeUserState = getUserState(UsersState, userId);
         const changedUserState = {
             ...beforeUserState,
+            position,
             keyState,
         };
 
