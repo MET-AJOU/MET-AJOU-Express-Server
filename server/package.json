@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node ./bin/www",
         "dev": "nodemon ./bin/www",
-        "build": "pm2 restart ./bin/www"
+        "build": "pm2 restart /var/lib/jenkins/workspace/metajou/server/bin/www"
     },
     "dependencies": {
         "cookie-parser": "~1.4.4",
