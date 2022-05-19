@@ -113,6 +113,7 @@ export const initSocketEvents = ({
 
   socket.on('disconnect', () => {
     const leaveUserId = SocketMap.get(socket.id);
+    console.log("leaver User Id", leaveUserId);
     const leaveRoomId = UserIdToRoom.get(leaveUserId);
     removeUser(leaveUserId, UserIdToRoom, UsersState, SocketMap);
     const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, leaveRoomId);
