@@ -11,3 +11,9 @@ export const getUserState = (UsersState, _userId) => {
         if (userId === _userId) return userState;
     })[0];
 };
+
+export const removeUser = (userId, UserIdToRoom, UsersState, SocketMap) => {
+    UserIdToRoom.delete(userId);
+    UsersState.delete(userId);
+    SocketMap.delete(userId);
+}

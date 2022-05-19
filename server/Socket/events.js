@@ -1,12 +1,14 @@
 import {
   getJoinedUsersState,
-  getUserState
+  getUserState,
+  removeUser
 } from './util.js';
 
 import {
   defaultKeyBoardState
 } from './constant.js';
 
+const SocketMap = new Map();
 const UserIdToRoom = new Map();
 const UsersState = new Map();
 
@@ -28,6 +30,7 @@ export const initSocketEvents = ({
     userId
   }) => {
     let _userId = UsersState.size + 1;
+    SocketMap.set(socket.id, userId);
     UserIdToRoom.set(_userId, roomId);
     io.in(roomId).emit('joinNewUser', {
       userId: _userId,
@@ -107,4 +110,13 @@ export const initSocketEvents = ({
     const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
     io.in(roomId).emit('keyUp', joinedUsers);
   });
+
+  socket.on('disconnect', () => {
+    const leaveUserId = SocketMap.get(socket.id);
+    const leaveRoomId = UserIdToRoom.get(leaveUserId);
+    removeUser(leaveUserId, UserIdToRoom, UsersState, SocketMap);
+    const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, leaveRoomId);
+    io.in(leaveRoomId).emit('leaveUser', joinedUsers);
+
+  })
 };
