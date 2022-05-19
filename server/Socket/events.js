@@ -1,6 +1,11 @@
-import { getJoinedUsersState, getUserState } from './util.js';
+import {
+  getJoinedUsersState,
+  getUserState
+} from './util.js';
 
-import { defaultKeyBoardState } from './constant.js';
+import {
+  defaultKeyBoardState
+} from './constant.js';
 
 const UserIdToRoom = new Map();
 const UsersState = new Map();
@@ -14,11 +19,16 @@ export const printConnection = (socket) => {
   console.log('socket id : ', socket.id);
 };
 
-export const initSocketEvents = ({ io, socket }) => {
-  socket.on('join', ({ roomId, userId }) => {
+export const initSocketEvents = ({
+  io,
+  socket
+}) => {
+  socket.on('join', ({
+    roomId,
+    userId
+  }) => {
     let _userId = UsersState.size + 1;
     UserIdToRoom.set(_userId, roomId);
-    console.log(UsersState);
     io.in(roomId).emit('joinNewUser', {
       userId: _userId,
       characterId: 1,
@@ -42,13 +52,17 @@ export const initSocketEvents = ({ io, socket }) => {
     });
 
     const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
-
+    console.log(joinedUsers);
     io.to(socket.id).emit('getUserId', _userId);
     io.to(socket.id).emit('joinRoom', joinedUsers);
     socket.join(roomId);
   });
 
-  socket.on('chat', ({ userId, message, position }) => {
+  socket.on('chat', ({
+    userId,
+    message,
+    position
+  }) => {
     const roomId = getJoinRoom(userId);
     io.in(roomId).emit('chat', {
       userId,
@@ -57,7 +71,11 @@ export const initSocketEvents = ({ io, socket }) => {
     });
   });
 
-  socket.on('keyDown', ({ userId, keyState, position }) => {
+  socket.on('keyDown', ({
+    userId,
+    keyState,
+    position
+  }) => {
     const roomId = getJoinRoom(userId);
     const beforeUserState = getUserState(UsersState, userId);
     const changedUserState = {
@@ -71,7 +89,11 @@ export const initSocketEvents = ({ io, socket }) => {
     io.in(roomId).emit('keyDown', joinedUsers);
   });
 
-  socket.on('keyUp', ({ userId, keyState, position }) => {
+  socket.on('keyUp', ({
+    userId,
+    keyState,
+    position
+  }) => {
     const roomId = getJoinRoom(userId);
 
     const beforeUserState = getUserState(UsersState, userId);
