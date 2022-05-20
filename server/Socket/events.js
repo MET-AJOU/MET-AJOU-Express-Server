@@ -67,10 +67,8 @@ export const initSocketEvents = ({ io, socket }) => {
       keyState,
     };
 
-    UsersState.set(userId, changedUserState);
-    const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
-    io.in(roomId).emit('keyDown', joinedUsers);
-  });
+  socket.on('keyDown', keyDown);
+  socket.on('keyUp', keyUp);
 
   socket.on('keyUp', ({ userId, keyState, position }) => {
     const roomId = getJoinRoom(UserIdToRoom, userId);
