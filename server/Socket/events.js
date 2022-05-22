@@ -88,6 +88,6 @@ export const initSocketEvents = ({ io, socket }) => {
       UserIdToRoom,
       leaveRoomId,
     );
-    io.in(leaveRoomId).emit('leaveUser', joinedUsers);
+    io.in(leaveRoomId).emit('leaveUser', { joinedUsers, leaveUserId });
   });
 };
