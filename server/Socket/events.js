@@ -47,6 +47,7 @@ export const initSocketEvents = ({ io, socket }) => {
       userId,
       message,
       position,
+      type: 'chat',
     });
   });
 
