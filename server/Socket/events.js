@@ -84,11 +84,11 @@ export const initSocketEvents = ({ io, socket }) => {
     console.log('leaver User Id', leaveUserId);
     const leaveRoomId = UserIdToRoom.get(leaveUserId);
     removeUser(leaveUserId, UserIdToRoom, UsersState, SocketMap);
-    const joineUsers = getJoinedUsersState(
+    const joinUsers = getJoinedUsersState(
       UsersState,
       UserIdToRoom,
       leaveRoomId,
     );
-    io.in(leaveRoomId).emit('leaveUser', { joineUsers, leaveUserId });
+    io.in(leaveRoomId).emit('leaveUser', { joinUsers, leaveUserId });
   });
 };
