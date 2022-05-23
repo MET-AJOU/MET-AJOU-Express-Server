@@ -15,3 +15,15 @@ export const removeUser = (userId, UserIdToRoom, UsersState, SocketMap) => {
   UsersState.delete(userId);
   SocketMap.delete(userId);
 };
+
+export const getAnonymous = (obj) => {
+  for (let i = 0; i < 100; i++) {
+    if (obj['guest' + i]) continue;
+    return 'guest' + i;
+  }
+};
+
+export const deleteAnonymous = (obj, id) => {
+  if (!obj[id]) return;
+  obj[id] = undefined;
+};
