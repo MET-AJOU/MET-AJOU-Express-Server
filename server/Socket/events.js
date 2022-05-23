@@ -1,10 +1,17 @@
-import { getJoinedUsersState, getUserState, removeUser } from './util.js';
+import {
+  deleteAnonymous,
+  getAnonymous,
+  getJoinedUsersState,
+  getUserState,
+  removeUser,
+} from './util.js';
 import { defaultKeyBoardState, DefaultPosition } from './constant.js';
 
 const SocketMap = new Map();
 const UserIdToRoom = new Map();
 const UsersState = new Map();
-let anonymous_id = 0;
+let anonymous = {};
+
 const getJoinRoom = (map, key) => map.get(key);
 
 export const printConnection = (socket) => {
@@ -16,8 +23,12 @@ export const printConnection = (socket) => {
 
 export const initSocketEvents = ({ io, socket }) => {
   socket.on('join', ({ roomId, userId }) => {
-    let _userId = userId || anonymous_id++ % 100;
-    SocketMap.set(socket.id, userId);
+    let _userId = userId;
+    if (!userId) {
+      _userId = getAnonymous(anonymous);
+      anonymous[_userId] = _userId;
+    }
+    SocketMap.set(socket.id, _userId);
     UserIdToRoom.set(_userId, roomId);
 
     io.in(roomId).emit('joinNewUser', {
@@ -90,6 +101,7 @@ export const initSocketEvents = ({ io, socket }) => {
       UserIdToRoom,
       leaveRoomId,
     );
+    deleteAnonymous(anonymous, leaveUserId);
     io.in(leaveRoomId).emit('leaveUser', {
       joinUsers,
       leaveUserId,
