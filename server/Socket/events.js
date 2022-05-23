@@ -1,10 +1,17 @@
-import { getJoinedUsersState, getUserState, removeUser } from './util.js';
-import { defaultKeyBoardState, DefaultPosition } from './constant.js';
+import {
+  getJoinedUsersState,
+  getUserState,
+  removeUser
+} from './util.js';
+import {
+  defaultKeyBoardState,
+  DefaultPosition
+} from './constant.js';
 
 const SocketMap = new Map();
 const UserIdToRoom = new Map();
 const UsersState = new Map();
-
+let anonymous_id = 0;
 const getJoinRoom = (map, key) => map.get(key);
 
 export const printConnection = (socket) => {
@@ -14,9 +21,15 @@ export const printConnection = (socket) => {
   console.log('socket id : ', socket.id);
 };
 
-export const initSocketEvents = ({ io, socket }) => {
-  socket.on('join', ({ roomId, userId }) => {
-    let _userId = UsersState.size + 1;
+export const initSocketEvents = ({
+  io,
+  socket
+}) => {
+  socket.on('join', ({
+    roomId,
+    userId
+  }) => {
+    let _userId = userId || anonymous_id++;
     SocketMap.set(socket.id, userId);
     UserIdToRoom.set(_userId, roomId);
 
@@ -41,7 +54,11 @@ export const initSocketEvents = ({ io, socket }) => {
     socket.join(roomId);
   });
 
-  socket.on('chat', ({ userId, message, position }) => {
+  socket.on('chat', ({
+    userId,
+    message,
+    position
+  }) => {
     const roomId = getJoinRoom(UserIdToRoom, userId);
     io.in(roomId).emit('chat', {
       userId,
@@ -51,7 +68,11 @@ export const initSocketEvents = ({ io, socket }) => {
     });
   });
 
-  socket.on('keyDown', ({ userId, keyState, position }) => {
+  socket.on('keyDown', ({
+    userId,
+    keyState,
+    position
+  }) => {
     const roomId = getJoinRoom(UserIdToRoom, userId);
     const beforeUserState = getUserState(UsersState, userId);
     const changedUserState = {
@@ -64,7 +85,11 @@ export const initSocketEvents = ({ io, socket }) => {
     io.in(roomId).emit('keyDown', joinedUsers);
   });
 
-  socket.on('keyUp', ({ userId, keyState, position }) => {
+  socket.on('keyUp', ({
+    userId,
+    keyState,
+    position
+  }) => {
     const roomId = getJoinRoom(UserIdToRoom, userId);
 
     const beforeUserState = getUserState(UsersState, userId);
@@ -89,6 +114,9 @@ export const initSocketEvents = ({ io, socket }) => {
       UserIdToRoom,
       leaveRoomId,
     );
-    io.in(leaveRoomId).emit('leaveUser', { joinUsers, leaveUserId });
+    io.in(leaveRoomId).emit('leaveUser', {
+      joinUsers,
+      leaveUserId
+    });
   });
 };
