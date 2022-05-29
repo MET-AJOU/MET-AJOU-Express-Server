@@ -7,7 +7,13 @@ export const socketInit = (server, app) => {
     const io = new Server(server, {
         cors: corsOption,
     });
+
     io.on('connection', (socket) => {
+        console.log(socket.conn.transport.name);
+        socket.conn.on('upgrade', () => {
+            const upgradedTransport = socket.conn.transport.name; // in most cases, "websocket"
+            console.log(upgradedTransport);
+        });
         printConnection(socket);
         initSocketEvents({
             io,
