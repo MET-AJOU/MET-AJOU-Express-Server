@@ -46,8 +46,6 @@ export const initSocketEvents = ({ io, socket }) => {
     });
 
     const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
-    console.log(joinedUsers);
-
     io.to(socket.id).emit('joinRoom', joinedUsers);
     socket.join(roomId);
     if (!userId) io.to(socket.id).emit('getUserId', _userId);
@@ -93,7 +91,6 @@ export const initSocketEvents = ({ io, socket }) => {
 
   socket.on('disconnect', () => {
     const leaveUserId = SocketMap.get(socket.id);
-    console.log('leaver User Id', leaveUserId);
     const leaveRoomId = UserIdToRoom.get(leaveUserId);
     removeUser(leaveUserId, UserIdToRoom, UsersState, SocketMap);
     const joinUsers = getJoinedUsersState(
