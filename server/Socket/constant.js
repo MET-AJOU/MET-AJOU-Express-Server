@@ -24,4 +24,9 @@ export const DefaultPosition = {
     y: 0,
     z: 0,
   },
+  4: {
+    x: 0,
+    y: 1.5,
+    z: 0,
+  },
 };
