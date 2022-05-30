@@ -92,6 +92,11 @@ export const initSocketEvents = ({ io, socket }) => {
         io.in(roomId).emit('keyUp', joinedUsers);
     });
 
+    socket.on('changeCharacter', ({ userId }) => {
+        const roomId = getJoinRoom(UserIdToRoom, userId);
+        io.in(roomId).emit('changeCharacter');
+    })
+
     socket.on('disconnect', () => {
         const leaveUserId = SocketMap.get(socket.id);
         console.log('leaver User Id', leaveUserId);
