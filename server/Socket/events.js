@@ -40,33 +40,33 @@ export const initSocketEvents = ({ io, socket }) => {
       keyState: defaultKeyBoardState,
       joinTime,
     });
-
-    UsersState.set(_userId, {
-      userId: _userId,
-      position: DefaultPosition[roomId],
-      characterId: 1,
-      keyState: defaultKeyBoardState,
-      joinTime,
-    });
-
-    const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
-    console.log(joinedUsers);
-
-    io.to(socket.id).emit('joinRoom', joinedUsers);
-    socket.join(roomId);
-    if (!userId) io.to(socket.id).emit('getUserId', _userId);
   });
 
-  socket.on('chat', ({ userId, message, position }) => {
-    const roomId = getJoinRoom(UserIdToRoom, userId);
-    io.in(roomId).emit('chat', {
-      userId,
-      message,
-      position,
-      type: 'chat',
-    });
+  UsersState.set(_userId, {
+    userId: _userId,
+    position: DefaultPosition[roomId],
+    characterId: 1,
+    keyState: defaultKeyBoardState,
+    joinTime,
   });
+
+  const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
+  console.log(joinedUsers);
+
+  io.to(socket.id).emit('joinRoom', joinedUsers);
+  socket.join(roomId);
+  if (!userId) io.to(socket.id).emit('getUserId', _userId);
 };
+
+socket.on('chat', ({ userId, message, position }) => {
+  const roomId = getJoinRoom(UserIdToRoom, userId);
+  io.in(roomId).emit('chat', {
+    userId,
+    message,
+    position,
+    type: 'chat',
+  });
+});
 
 socket.on('keyDown', ({ userId, keyState, position }) => {
   const roomId = getJoinRoom(UserIdToRoom, userId);
