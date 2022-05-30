@@ -94,8 +94,9 @@ export const initSocketEvents = ({ io, socket }) => {
 
     socket.on('changeCharacter', ({ userId }) => {
         const roomId = getJoinRoom(UserIdToRoom, userId);
+        console.log(userId, roomId);
         io.in(roomId).emit('changeCharacter');
-    })
+    });
 
     socket.on('disconnect', () => {
         const leaveUserId = SocketMap.get(socket.id);
