@@ -15,7 +15,7 @@ export const DefaultPosition = {
     z: 9.5,
   },
   2: {
-    x: 0,
+    x: 5,
     y: 0,
     z: 0,
   },
