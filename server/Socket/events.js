@@ -122,6 +122,10 @@ export const initSocketEvents = ({
         const roomId = getJoinRoom(UserIdToRoom, userId);
         const joinTime = Date.now();
         console.log(userId, roomId);
+        UsersState.set(userId, {
+            ...UsersState.get(userId),
+            joinTime
+        });
         io.in(roomId).emit('changeCharacter', {
             joinTime,
             userId
@@ -139,6 +143,7 @@ export const initSocketEvents = ({
             leaveRoomId,
         );
         deleteAnonymous(anonymous, leaveUserId);
+
         io.in(leaveRoomId).emit('leaveUser', {
             joinUsers,
             leaveUserId,
