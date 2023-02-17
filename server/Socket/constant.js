@@ -1,4 +1,4 @@
-export const defaultKeyBoardState = {
+export const DEFAULT_KEYBOARD_STATE = {
   backward: false,
   forward: false,
   left: false,
@@ -12,7 +12,8 @@ export const defaultKeyBoardState = {
   lose: false,
 };
 
-export const DefaultPosition = {
+// [mapId]: {x,y,z}
+export const DEFAULT_CHAEACTER_POSITION = {
   1: {
     x: -11.4,
     y: 3,
@@ -33,4 +34,10 @@ export const DefaultPosition = {
     y: 1.5,
     z: 0,
   },
+};
+
+export const DEFAULT_CAMERA_DIRECTION = {
+  x: 0,
+  y: 0,
+  z: -1,
 };
