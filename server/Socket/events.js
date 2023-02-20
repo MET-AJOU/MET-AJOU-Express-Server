@@ -5,7 +5,11 @@ import {
   getUserState,
   removeUser,
 } from './util.js';
-import { defaultKeyBoardState, DefaultPosition } from './constant.js';
+import {
+  DEFAULT_CHAEACTER_POSITION,
+  DEFAULT_KEYBOARD_STATE,
+  DEFAULT_CAMERA_DIRECTION,
+} from './constant.js';
 
 const SocketMap = new Map();
 const UserIdToRoom = new Map();
@@ -36,17 +40,19 @@ export const initSocketEvents = ({ io, socket }) => {
     io.in(roomId).emit('joinNewUser', {
       userId: _userId,
       characterId: 1,
-      position: DefaultPosition[roomId],
-      keyState: defaultKeyBoardState,
+      position: DEFAULT_CHAEACTER_POSITION[roomId],
+      keyState: DEFAULT_KEYBOARD_STATE,
       joinTime,
+      cameraDirection: DEFAULT_CAMERA_DIRECTION,
     });
 
     UsersState.set(_userId, {
       userId: _userId,
-      position: DefaultPosition[roomId],
+      position: DEFAULT_CHAEACTER_POSITION[roomId],
       characterId: 1,
-      keyState: defaultKeyBoardState,
+      keyState: DEFAULT_KEYBOARD_STATE,
       joinTime,
+      cameraDirection: DEFAULT_CAMERA_DIRECTION,
     });
 
     const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
@@ -108,6 +114,23 @@ export const initSocketEvents = ({ io, socket }) => {
       userId,
     });
   });
+
+  socket.on(
+    'changeCameraDirection',
+    ({ userId, cameraDirection, position }) => {
+      const roomId = getJoinRoom(UserIdToRoom, userId);
+      const beforeUserState = getUserState(UsersState, userId);
+      const changedUserState = {
+        ...beforeUserState,
+        cameraDirection,
+        position,
+      };
+
+      UsersState.set(userId, changedUserState);
+      const joinedUsers = getJoinedUsersState(UsersState, UserIdToRoom, roomId);
+      io.in(roomId).emit('changeCameraDirection', joinedUsers);
+    },
+  );
 
   socket.on('disconnect', () => {
     const leaveUserId = SocketMap.get(socket.id);
